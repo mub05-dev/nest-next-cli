@@ -9,10 +9,10 @@ const TEMPLATES_ROOT = path.resolve(__dirname, '../templates');
 
 export type ProjectType = 'backend' | 'frontend' | 'monorepo';
 
-// TODO: M2/M3/M4 reemplazan cada entrada por su template real
-// (backend-nestjs-prisma, frontend-nextjs, monorepo-turborepo).
+// TODO: M3/M4 reemplazan cada entrada por su template real
+// (frontend-nextjs, monorepo-turborepo).
 const TEMPLATE_BY_TYPE: Record<ProjectType, string> = {
-  backend: '_placeholder',
+  backend: 'backend-nestjs-prisma',
   frontend: '_placeholder',
   monorepo: '_placeholder',
 };

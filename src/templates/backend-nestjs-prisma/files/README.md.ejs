@@ -1,0 +1,42 @@
+# <%= projectName %>
+
+Backend generado con `nest-next-cli` (NestJS + Prisma + PostgreSQL).
+
+## Requisitos
+
+- Node.js >= 18
+- pnpm >= 9
+- Docker (opcional, recomendado)
+
+## Desarrollo con Docker
+
+```bash
+cp .env.example .env
+docker-compose up
+```
+
+La API queda disponible en http://localhost:3000/health.
+
+## Desarrollo local (sin Docker)
+
+```bash
+pnpm install
+cp .env.example .env
+pnpm prisma:migrate
+pnpm start:dev
+```
+
+## Scripts
+
+- `pnpm start:dev` — modo desarrollo con hot-reload
+- `pnpm build` — build de producción
+- `pnpm test` — tests unitarios
+- `pnpm lint` — lint del código
+- `pnpm prisma:generate` — genera el cliente de Prisma
+- `pnpm prisma:migrate` — aplica migraciones pendientes
+
+## Notas
+
+Si el hook de pre-commit no se ejecuta, corre `chmod +x .husky/pre-commit`.
+
+Generado el <%= year %> por <%= author %>.

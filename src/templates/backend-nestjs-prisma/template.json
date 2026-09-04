@@ -1,0 +1,6 @@
+{
+  "name": "backend-nestjs-prisma",
+  "version": "1.0.0",
+  "cliMinVersion": "0.1.0",
+  "description": "NestJS + Prisma + PostgreSQL"
+}
