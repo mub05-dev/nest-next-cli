@@ -4,6 +4,7 @@ import type { ProjectType } from '../generators/generateProject.js';
 export interface CreateAnswers {
   projectName: string;
   type: ProjectType;
+  frontendI18n?: boolean;
 }
 
 export async function promptMissingCreateOptions(
@@ -40,7 +41,22 @@ export async function promptMissingCreateOptions(
     process.exit(1);
   }
 
+  let frontendI18n = partial.frontendI18n;
+  if (type === 'frontend' && frontendI18n === undefined) {
+    const answer = await clack.confirm({
+      message: '¿Incluir next-intl (i18n) en el frontend?',
+      initialValue: false,
+    });
+
+    if (clack.isCancel(answer)) {
+      clack.cancel('Operación cancelada.');
+      process.exit(1);
+    }
+
+    frontendI18n = answer;
+  }
+
   clack.outro('Generando proyecto...');
 
-  return { projectName: projectName as string, type: type as ProjectType };
+  return { projectName: projectName as string, type: type as ProjectType, frontendI18n };
 }

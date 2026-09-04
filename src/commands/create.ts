@@ -8,6 +8,7 @@ const PROJECT_TYPES: ProjectType[] = ['backend', 'frontend', 'monorepo'];
 
 interface CreateCommandOptions {
   type?: string;
+  i18n?: boolean;
 }
 
 export function registerCreateCommand(program: Command, cliVersion: string): void {
@@ -16,6 +17,8 @@ export function registerCreateCommand(program: Command, cliVersion: string): voi
     .description('Genera un nuevo proyecto (backend, frontend o monorepo)')
     .argument('[name]', 'nombre del proyecto a generar')
     .option('-t, --type <type>', 'tipo de proyecto: backend, frontend o monorepo')
+    .option('--i18n', 'incluir next-intl (i18n) en el template frontend')
+    .option('--no-i18n', 'omitir next-intl (i18n) en el template frontend')
     .action(async (name: string | undefined, options: CreateCommandOptions) => {
       if (options.type && !PROJECT_TYPES.includes(options.type as ProjectType)) {
         console.error(
@@ -28,6 +31,7 @@ export function registerCreateCommand(program: Command, cliVersion: string): voi
       const answers = await promptMissingCreateOptions({
         projectName: name,
         type: options.type as ProjectType | undefined,
+        frontendI18n: options.i18n,
       });
 
       const result = await validateProjectName(answers.projectName);
@@ -42,6 +46,7 @@ export function registerCreateCommand(program: Command, cliVersion: string): voi
         type: answers.type,
         targetDir: result.targetDir,
         cliVersion,
+        frontendI18n: answers.frontendI18n,
       });
 
       console.log(`Proyecto generado en ${path.relative(process.cwd(), result.targetDir)}`);

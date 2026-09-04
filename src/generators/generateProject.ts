@@ -9,13 +9,18 @@ const TEMPLATES_ROOT = path.resolve(__dirname, '../templates');
 
 export type ProjectType = 'backend' | 'frontend' | 'monorepo';
 
-// TODO: M3/M4 reemplazan cada entrada por su template real
-// (frontend-nextjs, monorepo-turborepo).
-const TEMPLATE_BY_TYPE: Record<ProjectType, string> = {
+// TODO: M4 reemplaza esta entrada por su template real (monorepo-turborepo).
+const TEMPLATE_BY_TYPE: Record<Exclude<ProjectType, 'frontend'>, string> = {
   backend: 'backend-nestjs-prisma',
-  frontend: '_placeholder',
   monorepo: '_placeholder',
 };
+
+function resolveTemplateDir(type: ProjectType, frontendI18n?: boolean): string {
+  if (type === 'frontend') {
+    return frontendI18n ? 'frontend-nextjs-intl' : 'frontend-nextjs';
+  }
+  return TEMPLATE_BY_TYPE[type];
+}
 
 export interface GenerateProjectOptions {
   projectName: string;
@@ -23,12 +28,13 @@ export interface GenerateProjectOptions {
   targetDir: string;
   author?: string;
   cliVersion: string;
+  frontendI18n?: boolean;
 }
 
 export async function generateProject(options: GenerateProjectOptions): Promise<void> {
   const { projectName, type, targetDir, cliVersion } = options;
   const author = options.author ?? '';
-  const templateDir = path.join(TEMPLATES_ROOT, TEMPLATE_BY_TYPE[type]);
+  const templateDir = path.join(TEMPLATES_ROOT, resolveTemplateDir(type, options.frontendI18n));
 
   const manifest = await readTemplateManifest(templateDir);
   assertCliCompatibility(manifest, cliVersion);

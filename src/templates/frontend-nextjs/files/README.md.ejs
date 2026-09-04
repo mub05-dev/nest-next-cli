@@ -1,0 +1,39 @@
+# <%= projectName %>
+
+Frontend generado con `nest-next-cli` (Next.js App Router + TypeScript + Tailwind).
+
+## Requisitos
+
+- Node.js >= 18
+- pnpm >= 9
+- Docker (opcional, recomendado)
+
+## Desarrollo con Docker
+
+```bash
+cp .env.example .env
+docker-compose up
+```
+
+La app queda disponible en http://localhost:3000.
+
+## Desarrollo local (sin Docker)
+
+```bash
+pnpm install
+cp .env.example .env
+pnpm dev
+```
+
+## Scripts
+
+- `pnpm dev` — modo desarrollo con hot-reload
+- `pnpm build` — build de producción
+- `pnpm test` — tests unitarios
+- `pnpm lint` — lint del código
+
+## Notas
+
+Si el hook de pre-commit no se ejecuta, corre `chmod +x .husky/pre-commit`.
+
+Generado el <%= year %> por <%= author %>.

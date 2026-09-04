@@ -37,6 +37,42 @@ describe('create command', () => {
     expect(await fs.pathExists(path.join(targetDir, '.scaffold-meta.json'))).toBe(true);
   });
 
+  it('genera la variante next-intl cuando se pasa --type frontend --i18n', async () => {
+    const program = buildProgram();
+
+    await program.parseAsync([
+      'node',
+      'nest-next-cli',
+      'create',
+      'demo-frontend',
+      '--type',
+      'frontend',
+      '--i18n',
+    ]);
+
+    const targetDir = path.join(tmpDir, 'demo-frontend');
+    expect(await fs.pathExists(path.join(targetDir, 'middleware.ts'))).toBe(true);
+    expect(await fs.pathExists(path.join(targetDir, 'app', '[locale]', 'page.tsx'))).toBe(true);
+  });
+
+  it('genera la variante base cuando se pasa --type frontend --no-i18n (sin prompt)', async () => {
+    const program = buildProgram();
+
+    await program.parseAsync([
+      'node',
+      'nest-next-cli',
+      'create',
+      'demo-frontend-base',
+      '--type',
+      'frontend',
+      '--no-i18n',
+    ]);
+
+    const targetDir = path.join(tmpDir, 'demo-frontend-base');
+    expect(await fs.pathExists(path.join(targetDir, 'middleware.ts'))).toBe(false);
+    expect(await fs.pathExists(path.join(targetDir, 'app', 'page.tsx'))).toBe(true);
+  });
+
   it('rechaza un --type inválido sin generar nada', async () => {
     const program = buildProgram();
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});

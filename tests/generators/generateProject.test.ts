@@ -20,7 +20,7 @@ describe('generateProject', () => {
   it('copia el template, renderiza variables y escribe .scaffold-meta.json', async () => {
     await generateProject({
       projectName: 'demo-app',
-      type: 'frontend',
+      type: 'monorepo',
       targetDir,
       author: 'Marco',
       cliVersion: '0.1.0',
@@ -46,7 +46,7 @@ describe('generateProject', () => {
     await expect(
       generateProject({
         projectName: 'demo-app',
-        type: 'frontend',
+        type: 'monorepo',
         targetDir,
         cliVersion: '0.0.1',
       }),

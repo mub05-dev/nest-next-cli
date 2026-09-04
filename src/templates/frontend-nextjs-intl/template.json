@@ -1,0 +1,6 @@
+{
+  "name": "frontend-nextjs-intl",
+  "version": "1.0.0",
+  "cliMinVersion": "0.1.0",
+  "description": "Next.js (App Router) + TypeScript + Tailwind + next-intl"
+}
