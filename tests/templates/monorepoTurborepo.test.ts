@@ -77,6 +77,11 @@ describe('monorepo-turborepo template', () => {
     });
   });
 
+  it('el workflow de CI filtra por paquetes afectados con turbo', async () => {
+    const ci = await fs.readFile(path.join(targetDir, '.github', 'workflows', 'ci.yml'), 'utf-8');
+    expect(ci).toContain('turbo run lint test build --filter');
+  });
+
   it('docker-compose.yml y .env.example incluyen el nombre del proyecto', async () => {
     const compose = await fs.readFile(path.join(targetDir, 'docker-compose.yml'), 'utf-8');
     const env = await fs.readFile(path.join(targetDir, '.env.example'), 'utf-8');

@@ -47,6 +47,10 @@ pnpm dev
 
 Para ejecutar un script en una sola app: `pnpm --filter api <script>` o `pnpm --filter web <script>`.
 
+## CI/CD
+
+El workflow en `.github/workflows/ci.yml` usa el filtrado de Turborepo (`--filter=...[ref]`) para solo lintear/testear/buildear las apps afectadas por los cambios de cada push o PR, en vez de correr todo el monorepo siempre.
+
 ## Notas
 
 Si el hook de pre-commit no se ejecuta, corre `chmod +x .husky/pre-commit`.

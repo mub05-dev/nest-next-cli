@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         with:
@@ -21,6 +23,12 @@ jobs:
           cache: pnpm
 
       - run: pnpm install
-      - run: pnpm lint
-      - run: pnpm test
-      - run: pnpm build
+
+      - name: Lint, test y build (solo paquetes afectados)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            FILTER="...[origin/${{ github.base_ref }}]"
+          else
+            FILTER="...[HEAD^1]"
+          fi
+          pnpm exec turbo run lint test build --filter="$FILTER"
