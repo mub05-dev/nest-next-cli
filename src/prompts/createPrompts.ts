@@ -7,9 +7,18 @@ export interface CreateAnswers {
   frontendI18n?: boolean;
 }
 
+export interface PromptMissingCreateOptionsSettings {
+  nonInteractive: boolean;
+}
+
 export async function promptMissingCreateOptions(
   partial: Partial<CreateAnswers>,
+  settings: PromptMissingCreateOptionsSettings = { nonInteractive: false },
 ): Promise<CreateAnswers> {
+  if (settings.nonInteractive) {
+    return resolveNonInteractive(partial);
+  }
+
   clack.intro('nest-next-cli — crear proyecto');
 
   const projectName =
@@ -59,4 +68,22 @@ export async function promptMissingCreateOptions(
   clack.outro('Generando proyecto...');
 
   return { projectName: projectName as string, type: type as ProjectType, frontendI18n };
+}
+
+function resolveNonInteractive(partial: Partial<CreateAnswers>): CreateAnswers {
+  if (!partial.projectName) {
+    throw new Error(
+      'Falta el nombre del proyecto. Pásalo como argumento (ej: create mi-app --type backend) o corre en modo interactivo.',
+    );
+  }
+
+  if (!partial.type) {
+    throw new Error(
+      'Falta --type. Debe ser uno de: backend, frontend, monorepo (o corre en modo interactivo).',
+    );
+  }
+
+  const frontendI18n = partial.type === 'frontend' ? (partial.frontendI18n ?? false) : partial.frontendI18n;
+
+  return { projectName: partial.projectName, type: partial.type, frontendI18n };
 }

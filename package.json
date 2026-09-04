@@ -7,10 +7,11 @@
     "nest-next-cli": "./dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "templates"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean",
+    "build": "tsup src/index.ts --format esm --dts --clean && node scripts/copy-templates.mjs",
     "dev": "tsx src/index.ts",
     "lint": "eslint .",
     "format": "prettier --write .",

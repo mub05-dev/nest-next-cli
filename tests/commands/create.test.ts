@@ -4,6 +4,15 @@ import fs from 'fs-extra';
 import { Command } from 'commander';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { registerCreateCommand } from '../../src/commands/create.js';
+import { generateProject } from '../../src/generators/generateProject.js';
+
+vi.mock('../../src/generators/generateProject.js', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../src/generators/generateProject.js')>();
+  return {
+    ...actual,
+    generateProject: vi.fn(actual.generateProject),
+  };
+});
 
 function buildProgram(): Command {
   const program = new Command();
@@ -71,6 +80,66 @@ describe('create command', () => {
     const targetDir = path.join(tmpDir, 'demo-frontend-base');
     expect(await fs.pathExists(path.join(targetDir, 'middleware.ts'))).toBe(false);
     expect(await fs.pathExists(path.join(targetDir, 'app', 'page.tsx'))).toBe(true);
+  });
+
+  it('--author se refleja en el package.json del proyecto generado', async () => {
+    const program = buildProgram();
+
+    await program.parseAsync([
+      'node',
+      'nest-next-cli',
+      'create',
+      'demo-author',
+      '--type',
+      'backend',
+      '--author',
+      'Ada Lovelace',
+    ]);
+
+    const pkg = await fs.readJson(path.join(tmpDir, 'demo-author', 'package.json'));
+    expect(pkg.author).toBe('Ada Lovelace');
+  });
+
+  it('modo no interactivo: falla con mensaje claro si falta --type (sin colgarse)', async () => {
+    const program = buildProgram();
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    await program.parseAsync(['node', 'nest-next-cli', 'create', 'demo-sin-type']);
+
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringMatching(/Falta --type/));
+    expect(await fs.pathExists(path.join(tmpDir, 'demo-sin-type'))).toBe(false);
+
+    errorSpy.mockRestore();
+  });
+
+  it('modo no interactivo: falla con mensaje claro si falta el nombre', async () => {
+    const program = buildProgram();
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    await program.parseAsync(['node', 'nest-next-cli', 'create', '--type', 'backend']);
+
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringMatching(/Falta el nombre del proyecto/));
+
+    errorSpy.mockRestore();
+  });
+
+  it('hace rollback de la carpeta si generateProject falla', async () => {
+    const mocked = vi.mocked(generateProject);
+    mocked.mockImplementationOnce(async (options) => {
+      await fs.ensureDir(options.targetDir);
+      await fs.writeFile(path.join(options.targetDir, 'partial.txt'), 'x');
+      throw new Error('boom');
+    });
+
+    const program = buildProgram();
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    await program.parseAsync(['node', 'nest-next-cli', 'create', 'demo-fail', '--type', 'backend']);
+
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('No se pudo generar el proyecto'));
+    expect(await fs.pathExists(path.join(tmpDir, 'demo-fail'))).toBe(false);
+
+    errorSpy.mockRestore();
   });
 
   it('rechaza un --type inválido sin generar nada', async () => {

@@ -1,11 +1,8 @@
 import path from 'node:path';
 import fs from 'fs-extra';
-import { fileURLToPath } from 'node:url';
 import { readTemplateManifest, assertCliCompatibility } from '../utils/templateManifest.js';
 import { renderTemplateFiles } from '../utils/renderTemplateFiles.js';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const TEMPLATES_ROOT = path.resolve(__dirname, '../templates');
+import { TEMPLATES_ROOT } from '../utils/templatesRoot.js';
 
 export type ProjectType = 'backend' | 'frontend' | 'monorepo';
 
