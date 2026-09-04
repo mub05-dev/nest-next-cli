@@ -1,6 +1,0 @@
-{
-  "name": "_placeholder",
-  "version": "0.1.0",
-  "cliMinVersion": "0.1.0",
-  "description": "Template mínimo usado en M1 para validar la tubería de generación. Se reemplaza por templates reales en M2/M3/M4."
-}

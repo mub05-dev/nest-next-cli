@@ -1,0 +1,54 @@
+# <%= projectName %>
+
+Monorepo generado con `nest-next-cli` (NestJS + Prisma + Next.js, orquestado con [Turborepo](https://turbo.build/)).
+
+## Estructura
+
+```
+apps/
+  api/    # Backend NestJS + Prisma (puerto 3000)
+  web/    # Frontend Next.js (puerto 3001 en dev, 3000 en Docker)
+packages/ # Código compartido entre apps (vacío por ahora)
+```
+
+## Requisitos
+
+- Node.js >= 18
+- pnpm >= 9
+- Docker (opcional, recomendado)
+
+## Desarrollo con Docker
+
+```bash
+cp .env.example .env
+docker-compose up
+```
+
+- API: http://localhost:3001/health
+- Web: http://localhost:3000
+
+## Desarrollo local (sin Docker)
+
+```bash
+pnpm install
+cp .env.example .env
+pnpm --filter api prisma:migrate
+pnpm dev
+```
+
+`pnpm dev` levanta `apps/api` (puerto 3000) y `apps/web` (puerto 3001) en paralelo vía Turborepo.
+
+## Scripts (raíz)
+
+- `pnpm dev` — modo desarrollo (todas las apps)
+- `pnpm build` — build de producción (todas las apps)
+- `pnpm test` — tests unitarios (todas las apps)
+- `pnpm lint` — lint (todas las apps)
+
+Para ejecutar un script en una sola app: `pnpm --filter api <script>` o `pnpm --filter web <script>`.
+
+## Notas
+
+Si el hook de pre-commit no se ejecuta, corre `chmod +x .husky/pre-commit`.
+
+Generado el <%= year %> por <%= author %>.

@@ -35,8 +35,8 @@ describe('generateProject', () => {
 
     const meta = await fs.readJson(path.join(targetDir, '.scaffold-meta.json'));
     expect(meta).toMatchObject({
-      templateName: '_placeholder',
-      templateVersion: '0.1.0',
+      templateName: 'monorepo-turborepo',
+      templateVersion: '1.0.0',
       cliVersion: '0.1.0',
     });
     expect(typeof meta.generatedAt).toBe('string');

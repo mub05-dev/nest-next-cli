@@ -1,0 +1,6 @@
+{
+  "name": "monorepo-turborepo",
+  "version": "1.0.0",
+  "cliMinVersion": "0.1.0",
+  "description": "Monorepo (NestJS + Prisma + Next.js) orquestado con Turborepo"
+}
