@@ -1,0 +1,47 @@
+name: Update template dependencies
+
+on:
+  schedule:
+    - cron: '0 6 1 * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Bump patch/minor versions in template package.json.ejs files
+        run: |
+          set -e
+          FILES=(
+            "src/templates/backend-nestjs-prisma/files/package.json.ejs"
+            "src/templates/frontend-nextjs/files/package.json.ejs"
+            "src/templates/frontend-nextjs-intl/files/package.json.ejs"
+            "src/templates/monorepo-turborepo/files/package.json.ejs"
+            "src/templates/monorepo-turborepo/files/apps/api/package.json.ejs"
+            "src/templates/monorepo-turborepo/files/apps/web/package.json.ejs"
+          )
+          for file in "${FILES[@]}"; do
+            echo "Checking $file"
+            npx --yes npm-check-updates -u --target minor --packageFile "$file"
+            node -e "JSON.parse(require('fs').readFileSync('$file', 'utf8'))"
+          done
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 'chore: update template dependency versions (patch/minor)'
+          title: 'chore: update template dependency versions (patch/minor)'
+          body: |
+            Automated monthly check with `npm-check-updates` (patch/minor only, majors excluded).
+
+            Review before merging: run the affected template(s) through a real
+            `create` + install/lint/test/build to confirm nothing broke, same as
+            any milestone change.
+          branch: chore/update-template-deps
+          labels: dependencies
