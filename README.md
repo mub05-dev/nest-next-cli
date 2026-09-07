@@ -47,6 +47,10 @@ npx nest-next-cli list-templates
 
 Cada template mantiene su propio `CHANGELOG.md` junto a su `template.json` (ver `src/templates/<nombre>/`).
 
+### Versiones de dependencias
+
+Las versiones de las librerías de cada template (NestJS, Next.js, Prisma, React, etc.) se mantienen al día automáticamente mediante el workflow [`update-template-deps.yml`](./.github/workflows/update-template-deps.yml): corre mensualmente (o manualmente vía `workflow_dispatch` en la pestaña Actions), chequea bumps de patch/minor con `npm-check-updates` sobre los `package.json.ejs` de cada template, y abre un PR con los cambios para revisión antes de mergear. Los majors quedan fuera de este proceso automático — se evalúan a mano, ya que pueden romper un template silenciosamente.
+
 ## Desarrollo
 
 ```bash
